@@ -1,0 +1,87 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: quay-storage-pv
+  labels:
+    type: local
+    app: quay
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  storageClassName: local-storage
+  volumeMode: Filesystem
+  local:
+    path: /quay/storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube
+                - host.minikube.internal
+                - localhost
+
+---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: quay-config-pv
+  labels:
+    type: local
+    app: quay
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  storageClassName: local-storage
+  volumeMode: Filesystem
+  local:
+    path: /quay/config
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube
+                - host.minikube.internal
+                - localhost
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: quay-storage-pvc
+  labels:
+    app: quay
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: quay-config-pvc
+  labels:
+    app: quay
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
